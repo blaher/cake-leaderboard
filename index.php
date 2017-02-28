@@ -1,14 +1,22 @@
 <?php
   require_once('config.php');
 
-  $endpoint = $config['host'].'/affiliates/api/5/reports.asmx?op=CampaignSummary';
+  $endpoint = $config['host'].'/affiliates/api/5/reports.asmx/CampaignSummary';
+
+  $affiliates = array();
 
   foreach ($config['affiliate_ids'] as $affiliate_id) {
     $params = array(
       'api_key' => $config['api_key'],
       'affiliate_id' => $affiliate_id,
       'start_date' => date('m/01/Y 00:00:00'),
-      'end_date' => date('m/01/Y 00:00:00', strtotime('+1 month'))
+      'end_date' => date('m/01/Y 00:00:00', strtotime('+1 month')),
+      'sub_affiliate' => '',
+      'conversion_type' => 'all',
+      'start_at_row' => 1,
+      'row_limit' => 1,
+      'sort_field' => 'offer_id',
+      'sort_descending' => 'FALSE'
     );
     $params = json_encode($params);
 
@@ -25,5 +33,10 @@
     $data = json_decode(curl_exec($ch));
     curl_close($ch);
 
-    print_r($data);
+    $affiliates[$affiliate_id] = array(
+      'name' => '',
+      'revenue' => $data->d->summary->revenue
+    );
   }
+
+  var_dump($affiliates);
