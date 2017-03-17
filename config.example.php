@@ -1,6 +1,18 @@
 <?php
   $config = array(
     'host' => 'www.mycakesite.com',
-    'api_key' => 'XjvdeijpYd5FRoNmRMeQ',
-    'affiliate_ids' => array('13'=>'Bob Kelso', '29'=>'Turk Turkleton', '42'=>'JD')
+    'affiliate_ids' => array(
+      '13'=>array(
+        'name'=>'Bob Kelso',
+        'api_key'=>'XjvdeijpYd5FRoNmRMeQ'
+      ),
+      '29'=>array(
+        'name'=>'Turk Turkleton',
+        'api_key'=>'BdvdeijpYd5FRoNmRMeT'
+      ),
+      '42'=>array(
+        'name'=>'John Dorian',
+        'api_key'=>'CovdeijpYd5FRoNmRMxH'
+      ),
+    )
   );

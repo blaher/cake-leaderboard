@@ -7,9 +7,9 @@
   $yearly_affiliates = array();
 
   // Monthly
-  foreach ($config['affiliate_ids'] as $affiliate_id=>$name) {
+  foreach ($config['affiliate_ids'] as $affiliate_id=>$array) {
     $params = array(
-      'api_key' => $config['api_key'],
+      'api_key' => $array['api_key'],
       'affiliate_id' => $affiliate_id,
       'start_date' => date('m/01/Y 00:00:00'),
       'end_date' => date('m/01/Y 00:00:00', strtotime('+1 month')),
@@ -35,13 +35,13 @@
     $data = json_decode(curl_exec($ch));
     curl_close($ch);
 
-    $monthly_affiliates[$name] = $data->d->summary->revenue;
+    $monthly_affiliates[$array['name']] = $data->d->summary->revenue;
   }
 
   // Yearly
-  foreach ($config['affiliate_ids'] as $affiliate_id=>$name) {
+  foreach ($config['affiliate_ids'] as $affiliate_id=>$array) {
     $params = array(
-      'api_key' => $config['api_key'],
+      'api_key' => $array['api_key'],
       'affiliate_id' => $affiliate_id,
       'start_date' => date('01/01/Y 00:00:00'),
       'end_date' => date('01/01/Y 00:00:00', strtotime('+1 year')),
@@ -67,7 +67,7 @@
     $data = json_decode(curl_exec($ch));
     curl_close($ch);
 
-    $yearly_affiliates[$name] = $data->d->summary->revenue;
+    $yearly_affiliates[$array['name']] = $data->d->summary->revenue;
   }
 
   arsort($monthly_affiliates);
