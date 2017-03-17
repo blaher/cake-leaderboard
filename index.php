@@ -104,6 +104,7 @@
     $yearly_affiliates[$array['name']] = $data->d->summary->revenue;
   }
 
+  arsort($weekly_affiliates);
   arsort($monthly_affiliates);
   arsort($yearly_affiliates);
 ?>
@@ -113,21 +114,21 @@
 <h1>Weekly</h1>
 <ol>
   <?php foreach ($weekly_affiliates as $name=>$amount): ?>
-    <li><?php echo $name; ?></li>
+    <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
   <?php endforeach; ?>
 </ol>
 
 <h1>Monthly</h1>
 <ol>
   <?php foreach ($monthly_affiliates as $name=>$amount): ?>
-    <li><?php echo $name; ?></li>
+    <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
   <?php endforeach; ?>
 </ol>
 
 <h1>Yearly</h1>
 <ol>
   <?php foreach ($yearly_affiliates as $name=>$amount): ?>
-    <li><?php echo $name; ?></li>
+    <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
   <?php endforeach; ?>
 </ol>
 
