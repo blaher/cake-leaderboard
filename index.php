@@ -143,7 +143,102 @@
   arsort($yearly_affiliates);
 ?>
 
-<html><body>
+<html>
+<head>
+  <script
+    src="https://code.jquery.com/jquery-3.2.0.min.js"
+    integrity="sha256-JAW99MJVpJBGcbzEuXk4Az05s/XyDdBomFqNlM3ic+I="
+    crossorigin="anonymous"></script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+  <script>
+    $(document).ready(function(){
+      var options = {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: 'Daily'
+        },
+        plotOptions: {
+          pie: {
+              allowPointSelect: true,
+              cursor: 'pointer',
+              dataLabels: {
+                  enabled: true,
+                  format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                  style: {
+                      color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                  }
+              }
+          }
+        }
+      };
+
+      options.series = [{
+          name: 'Affiliates',
+          colorByPoint: true,
+          data: [
+            <?php foreach ($daily_affiliates as $name=>$amount): ?>
+              {
+                name: '<?php echo $name; ?>',
+                y: <?php echo $amount; ?>
+              },
+            <?php endforeach; ?>
+          ]
+      }];
+      Highcharts.chart('daily_graph', options);
+
+      options.series = [{
+          name: 'Affiliates',
+          colorByPoint: true,
+          data: [
+            <?php foreach ($weekly_affiliates as $name=>$amount): ?>
+              {
+                name: '<?php echo $name; ?>',
+                y: <?php echo $amount; ?>
+              },
+            <?php endforeach; ?>
+          ]
+      }];
+      Highcharts.chart('weekly_graph', options);
+
+      options.series = [{
+          name: 'Affiliates',
+          colorByPoint: true,
+          data: [
+            <?php foreach ($monthly_affiliates as $name=>$amount): ?>
+              {
+                name: '<?php echo $name; ?>',
+                y: <?php echo $amount; ?>
+              },
+            <?php endforeach; ?>
+          ]
+      }];
+      Highcharts.chart('monthly_graph', options);
+
+      options.series = [{
+          name: 'Affiliates',
+          colorByPoint: true,
+          data: [
+            <?php foreach ($yearly_affiliates as $name=>$amount): ?>
+              {
+                name: '<?php echo $name; ?>',
+                y: <?php echo $amount; ?>
+              },
+            <?php endforeach; ?>
+          ]
+      }];
+      Highcharts.chart('yearly_graph', options);
+    });
+  </script>
+</head>
+
+<body>
 
 <h1>Daily</h1>
 <ol>
@@ -151,6 +246,7 @@
     <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
   <?php endforeach; ?>
 </ol>
+<div id="daily_graph"></div>
 
 <h1>Weekly</h1>
 <ol>
@@ -158,6 +254,7 @@
     <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
   <?php endforeach; ?>
 </ol>
+<div id="weekly_graph"></div>
 
 <h1>Monthly</h1>
 <ol>
@@ -165,6 +262,7 @@
     <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
   <?php endforeach; ?>
 </ol>
+<div id="monthly_graph"></div>
 
 <h1>Yearly</h1>
 <ol>
@@ -172,5 +270,6 @@
     <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
   <?php endforeach; ?>
 </ol>
+<div id="yearly_graph"></div>
 
 </body></html>
