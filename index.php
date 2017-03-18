@@ -145,6 +145,10 @@
 
 <html>
 <head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
   <script
     src="https://code.jquery.com/jquery-3.2.0.min.js"
     integrity="sha256-JAW99MJVpJBGcbzEuXk4Az05s/XyDdBomFqNlM3ic+I="
@@ -162,7 +166,7 @@
             type: 'pie'
         },
         title: {
-            text: 'Daily'
+            text: ''
         },
         plotOptions: {
           pie: {
@@ -236,40 +240,68 @@
       Highcharts.chart('yearly_graph', options);
     });
   </script>
+
+  <title>Cake Leaderboard</title>
 </head>
 
 <body>
 
-<h1>Daily</h1>
-<ol>
-  <?php foreach ($daily_affiliates as $name=>$amount): ?>
-    <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
-  <?php endforeach; ?>
-</ol>
-<div id="daily_graph"></div>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-6">
+      <h1>Daily</h1>
+      <ol>
+        <?php foreach ($daily_affiliates as $name=>$amount): ?>
+          <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
+        <?php endforeach; ?>
+      </ol>
+    </div>
+    <div class="col-sm-12 col-md-6">
+      <div id="daily_graph" style="height:200px"></div>
+    </div>
+  </div>
 
-<h1>Weekly</h1>
-<ol>
-  <?php foreach ($weekly_affiliates as $name=>$amount): ?>
-    <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
-  <?php endforeach; ?>
-</ol>
-<div id="weekly_graph"></div>
+  <div class="row">
+    <div class="col-sm-12 col-md-6">
+      <h1>Weekly</h1>
+      <ol>
+        <?php foreach ($weekly_affiliates as $name=>$amount): ?>
+          <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
+        <?php endforeach; ?>
+      </ol>
+    </div>
+    <div class="col-sm-12 col-md-6">
+      <div id="weekly_graph" style="height:200px"></div>
+    </div>
+  </div>
 
-<h1>Monthly</h1>
-<ol>
-  <?php foreach ($monthly_affiliates as $name=>$amount): ?>
-    <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
-  <?php endforeach; ?>
-</ol>
-<div id="monthly_graph"></div>
+  <div class="row">
+    <div class="col-sm-12 col-md-6">
+      <h1>Monthly</h1>
+      <ol>
+        <?php foreach ($monthly_affiliates as $name=>$amount): ?>
+          <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
+        <?php endforeach; ?>
+      </ol>
+    </div>
+    <div class="col-sm-12 col-md-6">
+      <div id="monthly_graph" style="height:200px"></div>
+    </div>
+  </div>
 
-<h1>Yearly</h1>
-<ol>
-  <?php foreach ($yearly_affiliates as $name=>$amount): ?>
-    <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
-  <?php endforeach; ?>
-</ol>
-<div id="yearly_graph"></div>
+  <div class="row">
+    <div class="col-sm-12 col-md-6">
+      <h1>Yearly</h1>
+      <ol>
+        <?php foreach ($yearly_affiliates as $name=>$amount): ?>
+          <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
+        <?php endforeach; ?>
+      </ol>
+    </div>
+    <div class="col-sm-12 col-md-6">
+      <div id="yearly_graph" style="height:200px"></div>
+    </div>
+  </div>
+</div>
 
 </body></html>
