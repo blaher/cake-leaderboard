@@ -14,5 +14,10 @@
         'name'=>'John Dorian',
         'api_key'=>'CovdeijpYd5FRoNmRMxH'
       ),
+      '69'=>array(
+        'name'=>'Turk Turkleton JV',
+        'api_key'=>'KlhdeijpYd5FRoNmRIuT',
+        'parent'=>'29'
+      ),
     )
   );
