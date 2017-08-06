@@ -44,7 +44,7 @@
     curl_close($ch);
 
     if (isset($array['parent'])) {
-      $daily_affiliates[$config[$array['parent']]['name']] += $data->d->summary->revenue;
+      $daily_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
     } else {
       $daily_affiliates[$array['name']] = $data->d->summary->revenue;
     }
@@ -81,7 +81,7 @@
     curl_close($ch);
 
     if (isset($array['parent'])) {
-      $weekly_affiliates[$config[$array['parent']]['name']] += $data->d->summary->revenue;
+      $weekly_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
     } else {
       $weekly_affiliates[$array['name']] = $data->d->summary->revenue;
     }
@@ -117,7 +117,7 @@
     curl_close($ch);
 
     if (isset($array['parent'])) {
-      $monthly_affiliates[$config[$array['parent']]['name']] += $data->d->summary->revenue;
+      $monthly_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
     } else {
       $monthly_affiliates[$array['name']] = $data->d->summary->revenue;
     }
@@ -153,7 +153,7 @@
     curl_close($ch);
 
     if (isset($array['parent'])) {
-      $yearly_affiliates[$config[$array['parent']]['name']] += $data->d->summary->revenue;
+      $yearly_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
     } else {
       $yearly_affiliates[$array['name']] = $data->d->summary->revenue;
     }
@@ -189,7 +189,7 @@
     curl_close($ch);
 
     if (isset($array['parent'])) {
-      $previous_daily_affiliates[$config[$array['parent']]['name']] += $data->d->summary->revenue;
+      $previous_daily_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
     } else {
       $previous_daily_affiliates[$array['name']] = $data->d->summary->revenue;
     }
@@ -226,7 +226,7 @@
     curl_close($ch);
 
     if (isset($array['parent'])) {
-      $previous_weekly_affiliates[$config[$array['parent']]['name']] += $data->d->summary->revenue;
+      $previous_weekly_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
     } else {
       $previous_weekly_affiliates[$array['name']] = $data->d->summary->revenue;
     }
@@ -262,7 +262,7 @@
     curl_close($ch);
 
     if (isset($array['parent'])) {
-      $previous_monthly_affiliates[$config[$array['parent']]['name']] += $data->d->summary->revenue;
+      $previous_monthly_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
     } else {
       $previous_monthly_affiliates[$array['name']] = $data->d->summary->revenue;
     }
@@ -298,7 +298,7 @@
     curl_close($ch);
 
     if (isset($array['parent'])) {
-      $previous_yearly_affiliates[$config[$array['parent']]['name']] += $data->d->summary->revenue;
+      $previous_yearly_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
     } else {
       $previous_yearly_affiliates[$array['name']] = $data->d->summary->revenue;
     }
@@ -334,7 +334,7 @@
     curl_close($ch);
 
     if (isset($array['parent'])) {
-      $lifetime_affiliates[$config[$array['parent']]['name']] += $data->d->summary->revenue;
+      $lifetime_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
     } else {
       $lifetime_affiliates[$array['name']] = $data->d->summary->revenue;
     }
