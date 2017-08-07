@@ -15,328 +15,346 @@
   $lifetime_affiliates = array();
 
   // Daily
-  foreach ($config['affiliate_ids'] as $affiliate_id=>$array) {
-    $params = array(
-      'api_key' => $array['api_key'],
-      'affiliate_id' => $affiliate_id,
-      'start_date' => date('m/d/Y 00:00:00'),
-      'end_date' => date('m/d/Y 00:00:00', strtotime('+1 day')),
-      'sub_affiliate' => '',
-      'conversion_type' => 'all',
-      'start_at_row' => 1,
-      'row_limit' => 1,
-      'sort_field' => 'offer_id',
-      'sort_descending' => 'FALSE'
-    );
-    $params = json_encode($params);
+  if (!isset($_GET['length']) || $_GET['length']=='day') {
+    foreach ($config['affiliate_ids'] as $affiliate_id=>$array) {
+      $params = array(
+        'api_key' => $array['api_key'],
+        'affiliate_id' => $affiliate_id,
+        'start_date' => date('m/d/Y 00:00:00'),
+        'end_date' => date('m/d/Y 00:00:00', strtotime('+1 day')),
+        'sub_affiliate' => '',
+        'conversion_type' => 'all',
+        'start_at_row' => 1,
+        'row_limit' => 1,
+        'sort_field' => 'offer_id',
+        'sort_descending' => 'FALSE'
+      );
+      $params = json_encode($params);
 
-    $ch = curl_init($endpoint);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-      'Content-Type: application/json',
-      'Content-Length: '.strlen($params)
-    ));
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    $data = json_decode(curl_exec($ch));
-    curl_close($ch);
+      $ch = curl_init($endpoint);
+      curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/json',
+        'Content-Length: '.strlen($params)
+      ));
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      $data = json_decode(curl_exec($ch));
+      curl_close($ch);
 
-    if (isset($array['parent'])) {
-      $daily_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
-    } else {
-      $daily_affiliates[$array['name']] = $data->d->summary->revenue;
+      if (isset($array['parent'])) {
+        $daily_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
+      } else {
+        $daily_affiliates[$array['name']] = $data->d->summary->revenue;
+      }
     }
   }
 
   // Weekly
-  $day = date('w');
-  foreach ($config['affiliate_ids'] as $affiliate_id=>$array) {
-    $params = array(
-      'api_key' => $array['api_key'],
-      'affiliate_id' => $affiliate_id,
-      'start_date' => date('m/d/Y 00:00:00', strtotime('-'.$day.' days')),
-      'end_date' => date('m/d/Y 00:00:00', strtotime('+1 month')),
-      'sub_affiliate' => '',
-      'conversion_type' => 'all',
-      'start_at_row' => 1,
-      'row_limit' => 1,
-      'sort_field' => 'offer_id',
-      'sort_descending' => 'FALSE'
-    );
-    $params = json_encode($params);
+  else if ($_GET['length']=='week') {
+    $day = date('w');
+    foreach ($config['affiliate_ids'] as $affiliate_id=>$array) {
+      $params = array(
+        'api_key' => $array['api_key'],
+        'affiliate_id' => $affiliate_id,
+        'start_date' => date('m/d/Y 00:00:00', strtotime('-'.$day.' days')),
+        'end_date' => date('m/d/Y 00:00:00', strtotime('+1 month')),
+        'sub_affiliate' => '',
+        'conversion_type' => 'all',
+        'start_at_row' => 1,
+        'row_limit' => 1,
+        'sort_field' => 'offer_id',
+        'sort_descending' => 'FALSE'
+      );
+      $params = json_encode($params);
 
-    $ch = curl_init($endpoint);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-      'Content-Type: application/json',
-      'Content-Length: '.strlen($params)
-    ));
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    $data = json_decode(curl_exec($ch));
-    curl_close($ch);
+      $ch = curl_init($endpoint);
+      curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/json',
+        'Content-Length: '.strlen($params)
+      ));
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      $data = json_decode(curl_exec($ch));
+      curl_close($ch);
 
-    if (isset($array['parent'])) {
-      $weekly_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
-    } else {
-      $weekly_affiliates[$array['name']] = $data->d->summary->revenue;
+      if (isset($array['parent'])) {
+        $weekly_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
+      } else {
+        $weekly_affiliates[$array['name']] = $data->d->summary->revenue;
+      }
     }
   }
 
   // Monthly
-  foreach ($config['affiliate_ids'] as $affiliate_id=>$array) {
-    $params = array(
-      'api_key' => $array['api_key'],
-      'affiliate_id' => $affiliate_id,
-      'start_date' => date('m/01/Y 00:00:00'),
-      'end_date' => date('m/01/Y 00:00:00', strtotime('+1 month')),
-      'sub_affiliate' => '',
-      'conversion_type' => 'all',
-      'start_at_row' => 1,
-      'row_limit' => 1,
-      'sort_field' => 'offer_id',
-      'sort_descending' => 'FALSE'
-    );
-    $params = json_encode($params);
+  else if ($_GET['length']=='month') {
+    foreach ($config['affiliate_ids'] as $affiliate_id=>$array) {
+      $params = array(
+        'api_key' => $array['api_key'],
+        'affiliate_id' => $affiliate_id,
+        'start_date' => date('m/01/Y 00:00:00'),
+        'end_date' => date('m/01/Y 00:00:00', strtotime('+1 month')),
+        'sub_affiliate' => '',
+        'conversion_type' => 'all',
+        'start_at_row' => 1,
+        'row_limit' => 1,
+        'sort_field' => 'offer_id',
+        'sort_descending' => 'FALSE'
+      );
+      $params = json_encode($params);
 
-    $ch = curl_init($endpoint);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-      'Content-Type: application/json',
-      'Content-Length: '.strlen($params)
-    ));
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    $data = json_decode(curl_exec($ch));
-    curl_close($ch);
+      $ch = curl_init($endpoint);
+      curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/json',
+        'Content-Length: '.strlen($params)
+      ));
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      $data = json_decode(curl_exec($ch));
+      curl_close($ch);
 
-    if (isset($array['parent'])) {
-      $monthly_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
-    } else {
-      $monthly_affiliates[$array['name']] = $data->d->summary->revenue;
+      if (isset($array['parent'])) {
+        $monthly_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
+      } else {
+        $monthly_affiliates[$array['name']] = $data->d->summary->revenue;
+      }
     }
   }
 
   // Yearly
-  foreach ($config['affiliate_ids'] as $affiliate_id=>$array) {
-    $params = array(
-      'api_key' => $array['api_key'],
-      'affiliate_id' => $affiliate_id,
-      'start_date' => date('01/01/Y 00:00:00'),
-      'end_date' => date('01/01/Y 00:00:00', strtotime('+1 year')),
-      'sub_affiliate' => '',
-      'conversion_type' => 'all',
-      'start_at_row' => 1,
-      'row_limit' => 1,
-      'sort_field' => 'offer_id',
-      'sort_descending' => 'FALSE'
-    );
-    $params = json_encode($params);
+  else if ($_GET['length']=='year') {
+    foreach ($config['affiliate_ids'] as $affiliate_id=>$array) {
+      $params = array(
+        'api_key' => $array['api_key'],
+        'affiliate_id' => $affiliate_id,
+        'start_date' => date('01/01/Y 00:00:00'),
+        'end_date' => date('01/01/Y 00:00:00', strtotime('+1 year')),
+        'sub_affiliate' => '',
+        'conversion_type' => 'all',
+        'start_at_row' => 1,
+        'row_limit' => 1,
+        'sort_field' => 'offer_id',
+        'sort_descending' => 'FALSE'
+      );
+      $params = json_encode($params);
 
-    $ch = curl_init($endpoint);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-      'Content-Type: application/json',
-      'Content-Length: '.strlen($params)
-    ));
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    $data = json_decode(curl_exec($ch));
-    curl_close($ch);
+      $ch = curl_init($endpoint);
+      curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/json',
+        'Content-Length: '.strlen($params)
+      ));
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      $data = json_decode(curl_exec($ch));
+      curl_close($ch);
 
-    if (isset($array['parent'])) {
-      $yearly_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
-    } else {
-      $yearly_affiliates[$array['name']] = $data->d->summary->revenue;
+      if (isset($array['parent'])) {
+        $yearly_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
+      } else {
+        $yearly_affiliates[$array['name']] = $data->d->summary->revenue;
+      }
     }
   }
 
   // Previous Daily
-  foreach ($config['affiliate_ids'] as $affiliate_id=>$array) {
-    $params = array(
-      'api_key' => $array['api_key'],
-      'affiliate_id' => $affiliate_id,
-      'start_date' => date('m/d/Y 00:00:00', strtotime('-1 day')),
-      'end_date' => date('m/d/Y 00:00:00'),
-      'sub_affiliate' => '',
-      'conversion_type' => 'all',
-      'start_at_row' => 1,
-      'row_limit' => 1,
-      'sort_field' => 'offer_id',
-      'sort_descending' => 'FALSE'
-    );
-    $params = json_encode($params);
+  else if ($_GET['length']=='last_day') {
+    foreach ($config['affiliate_ids'] as $affiliate_id=>$array) {
+      $params = array(
+        'api_key' => $array['api_key'],
+        'affiliate_id' => $affiliate_id,
+        'start_date' => date('m/d/Y 00:00:00', strtotime('-1 day')),
+        'end_date' => date('m/d/Y 00:00:00'),
+        'sub_affiliate' => '',
+        'conversion_type' => 'all',
+        'start_at_row' => 1,
+        'row_limit' => 1,
+        'sort_field' => 'offer_id',
+        'sort_descending' => 'FALSE'
+      );
+      $params = json_encode($params);
 
-    $ch = curl_init($endpoint);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-      'Content-Type: application/json',
-      'Content-Length: '.strlen($params)
-    ));
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    $data = json_decode(curl_exec($ch));
-    curl_close($ch);
+      $ch = curl_init($endpoint);
+      curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/json',
+        'Content-Length: '.strlen($params)
+      ));
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      $data = json_decode(curl_exec($ch));
+      curl_close($ch);
 
-    if (isset($array['parent'])) {
-      $previous_daily_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
-    } else {
-      $previous_daily_affiliates[$array['name']] = $data->d->summary->revenue;
+      if (isset($array['parent'])) {
+        $previous_daily_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
+      } else {
+        $previous_daily_affiliates[$array['name']] = $data->d->summary->revenue;
+      }
     }
   }
 
   // Previous Weekly
-  $day = date('w');
-  foreach ($config['affiliate_ids'] as $affiliate_id=>$array) {
-    $params = array(
-      'api_key' => $array['api_key'],
-      'affiliate_id' => $affiliate_id,
-      'start_date' => date('m/d/Y 00:00:00', strtotime('-'.($day+7).' days')),
-      'end_date' => date('m/d/Y 00:00:00', strtotime('-'.$day.' days')),
-      'sub_affiliate' => '',
-      'conversion_type' => 'all',
-      'start_at_row' => 1,
-      'row_limit' => 1,
-      'sort_field' => 'offer_id',
-      'sort_descending' => 'FALSE'
-    );
-    $params = json_encode($params);
+  else if ($_GET['length']=='last_week') {
+    $day = date('w');
+    foreach ($config['affiliate_ids'] as $affiliate_id=>$array) {
+      $params = array(
+        'api_key' => $array['api_key'],
+        'affiliate_id' => $affiliate_id,
+        'start_date' => date('m/d/Y 00:00:00', strtotime('-'.($day+7).' days')),
+        'end_date' => date('m/d/Y 00:00:00', strtotime('-'.$day.' days')),
+        'sub_affiliate' => '',
+        'conversion_type' => 'all',
+        'start_at_row' => 1,
+        'row_limit' => 1,
+        'sort_field' => 'offer_id',
+        'sort_descending' => 'FALSE'
+      );
+      $params = json_encode($params);
 
-    $ch = curl_init($endpoint);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-      'Content-Type: application/json',
-      'Content-Length: '.strlen($params)
-    ));
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    $data = json_decode(curl_exec($ch));
-    curl_close($ch);
+      $ch = curl_init($endpoint);
+      curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/json',
+        'Content-Length: '.strlen($params)
+      ));
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      $data = json_decode(curl_exec($ch));
+      curl_close($ch);
 
-    if (isset($array['parent'])) {
-      $previous_weekly_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
-    } else {
-      $previous_weekly_affiliates[$array['name']] = $data->d->summary->revenue;
+      if (isset($array['parent'])) {
+        $previous_weekly_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
+      } else {
+        $previous_weekly_affiliates[$array['name']] = $data->d->summary->revenue;
+      }
     }
   }
 
   // Previous Monthly
-  foreach ($config['affiliate_ids'] as $affiliate_id=>$array) {
-    $params = array(
-      'api_key' => $array['api_key'],
-      'affiliate_id' => $affiliate_id,
-      'start_date' => date('m/01/Y 00:00:00', strtotime('-1 month')),
-      'end_date' => date('m/01/Y 00:00:00'),
-      'sub_affiliate' => '',
-      'conversion_type' => 'all',
-      'start_at_row' => 1,
-      'row_limit' => 1,
-      'sort_field' => 'offer_id',
-      'sort_descending' => 'FALSE'
-    );
-    $params = json_encode($params);
+  else if ($_GET['length']=='last_month') {
+    foreach ($config['affiliate_ids'] as $affiliate_id=>$array) {
+      $params = array(
+        'api_key' => $array['api_key'],
+        'affiliate_id' => $affiliate_id,
+        'start_date' => date('m/01/Y 00:00:00', strtotime('-1 month')),
+        'end_date' => date('m/01/Y 00:00:00'),
+        'sub_affiliate' => '',
+        'conversion_type' => 'all',
+        'start_at_row' => 1,
+        'row_limit' => 1,
+        'sort_field' => 'offer_id',
+        'sort_descending' => 'FALSE'
+      );
+      $params = json_encode($params);
 
-    $ch = curl_init($endpoint);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-      'Content-Type: application/json',
-      'Content-Length: '.strlen($params)
-    ));
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    $data = json_decode(curl_exec($ch));
-    curl_close($ch);
+      $ch = curl_init($endpoint);
+      curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/json',
+        'Content-Length: '.strlen($params)
+      ));
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      $data = json_decode(curl_exec($ch));
+      curl_close($ch);
 
-    if (isset($array['parent'])) {
-      $previous_monthly_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
-    } else {
-      $previous_monthly_affiliates[$array['name']] = $data->d->summary->revenue;
+      if (isset($array['parent'])) {
+        $previous_monthly_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
+      } else {
+        $previous_monthly_affiliates[$array['name']] = $data->d->summary->revenue;
+      }
     }
   }
 
   // Previousl Yearly
-  foreach ($config['affiliate_ids'] as $affiliate_id=>$array) {
-    $params = array(
-      'api_key' => $array['api_key'],
-      'affiliate_id' => $affiliate_id,
-      'start_date' => date('01/01/Y 00:00:00', strtotime('-1 year')),
-      'end_date' => date('01/01/Y 00:00:00'),
-      'sub_affiliate' => '',
-      'conversion_type' => 'all',
-      'start_at_row' => 1,
-      'row_limit' => 1,
-      'sort_field' => 'offer_id',
-      'sort_descending' => 'FALSE'
-    );
-    $params = json_encode($params);
+  else if ($_GET['length']=='last_year') {
+    foreach ($config['affiliate_ids'] as $affiliate_id=>$array) {
+      $params = array(
+        'api_key' => $array['api_key'],
+        'affiliate_id' => $affiliate_id,
+        'start_date' => date('01/01/Y 00:00:00', strtotime('-1 year')),
+        'end_date' => date('01/01/Y 00:00:00'),
+        'sub_affiliate' => '',
+        'conversion_type' => 'all',
+        'start_at_row' => 1,
+        'row_limit' => 1,
+        'sort_field' => 'offer_id',
+        'sort_descending' => 'FALSE'
+      );
+      $params = json_encode($params);
 
-    $ch = curl_init($endpoint);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-      'Content-Type: application/json',
-      'Content-Length: '.strlen($params)
-    ));
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    $data = json_decode(curl_exec($ch));
-    curl_close($ch);
+      $ch = curl_init($endpoint);
+      curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/json',
+        'Content-Length: '.strlen($params)
+      ));
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      $data = json_decode(curl_exec($ch));
+      curl_close($ch);
 
-    if (isset($array['parent'])) {
-      $previous_yearly_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
-    } else {
-      $previous_yearly_affiliates[$array['name']] = $data->d->summary->revenue;
+      if (isset($array['parent'])) {
+        $previous_yearly_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
+      } else {
+        $previous_yearly_affiliates[$array['name']] = $data->d->summary->revenue;
+      }
     }
   }
 
   // Lifetime
-  foreach ($config['affiliate_ids'] as $affiliate_id=>$array) {
-    $params = array(
-      'api_key' => $array['api_key'],
-      'affiliate_id' => $affiliate_id,
-      'start_date' => date('01/01/1969 00:00:00'),
-      'end_date' => date('m/d/Y 00:00:00', strtotime('+1 day')),
-      'sub_affiliate' => '',
-      'conversion_type' => 'all',
-      'start_at_row' => 1,
-      'row_limit' => 1,
-      'sort_field' => 'offer_id',
-      'sort_descending' => 'FALSE'
-    );
-    $params = json_encode($params);
+  else if ($_GET['length']=='life') {
+    foreach ($config['affiliate_ids'] as $affiliate_id=>$array) {
+      $params = array(
+        'api_key' => $array['api_key'],
+        'affiliate_id' => $affiliate_id,
+        'start_date' => date('01/01/1969 00:00:00'),
+        'end_date' => date('m/d/Y 00:00:00', strtotime('+1 day')),
+        'sub_affiliate' => '',
+        'conversion_type' => 'all',
+        'start_at_row' => 1,
+        'row_limit' => 1,
+        'sort_field' => 'offer_id',
+        'sort_descending' => 'FALSE'
+      );
+      $params = json_encode($params);
 
-    $ch = curl_init($endpoint);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-      'Content-Type: application/json',
-      'Content-Length: '.strlen($params)
-    ));
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    $data = json_decode(curl_exec($ch));
-    curl_close($ch);
+      $ch = curl_init($endpoint);
+      curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/json',
+        'Content-Length: '.strlen($params)
+      ));
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      $data = json_decode(curl_exec($ch));
+      curl_close($ch);
 
-    if (isset($array['parent'])) {
-      $lifetime_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
-    } else {
-      $lifetime_affiliates[$array['name']] = $data->d->summary->revenue;
+      if (isset($array['parent'])) {
+        $lifetime_affiliates[$config['affiliate_ids'][$array['parent']]['name']] += $data->d->summary->revenue;
+      } else {
+        $lifetime_affiliates[$array['name']] = $data->d->summary->revenue;
+      }
     }
   }
 
@@ -391,131 +409,153 @@
         }
       };
 
-      options.series = [{
-          name: 'Affiliates',
-          colorByPoint: true,
-          data: [
-            <?php foreach ($daily_affiliates as $name=>$amount): ?>
-              {
-                name: '<?php echo $name; ?>',
-                y: <?php echo $amount; ?>
-              },
-            <?php endforeach; ?>
-          ]
-      }];
-      Highcharts.chart('daily_graph', options);
+      <?php if(!isset($_GET['length']) || $_GET['length']=='day'): ?>
+        options.series = [{
+            name: 'Affiliates',
+            colorByPoint: true,
+            data: [
+              <?php foreach ($daily_affiliates as $name=>$amount): ?>
+                {
+                  name: '<?php echo $name; ?>',
+                  y: <?php echo $amount; ?>
+                },
+              <?php endforeach; ?>
+            ]
+        }];
+        Highcharts.chart('daily_graph', options);
+      <?php endif; ?>
 
-      options.series = [{
-          name: 'Affiliates',
-          colorByPoint: true,
-          data: [
-            <?php foreach ($weekly_affiliates as $name=>$amount): ?>
-              {
-                name: '<?php echo $name; ?>',
-                y: <?php echo $amount; ?>
-              },
-            <?php endforeach; ?>
-          ]
-      }];
-      Highcharts.chart('weekly_graph', options);
+      <?php if($_GET['length']=='week'): ?>
+        options.series = [{
+            name: 'Affiliates',
+            colorByPoint: true,
+            data: [
+              <?php foreach ($weekly_affiliates as $name=>$amount): ?>
+                {
+                  name: '<?php echo $name; ?>',
+                  y: <?php echo $amount; ?>
+                },
+              <?php endforeach; ?>
+            ]
+        }];
+        Highcharts.chart('weekly_graph', options);
+      <?php endif; ?>
 
-      options.series = [{
-          name: 'Affiliates',
-          colorByPoint: true,
-          data: [
-            <?php foreach ($monthly_affiliates as $name=>$amount): ?>
-              {
-                name: '<?php echo $name; ?>',
-                y: <?php echo $amount; ?>
-              },
-            <?php endforeach; ?>
-          ]
-      }];
-      Highcharts.chart('monthly_graph', options);
+      <?php if($_GET['length']=='month'): ?>
+        options.series = [{
+            name: 'Affiliates',
+            colorByPoint: true,
+            data: [
+              <?php foreach ($monthly_affiliates as $name=>$amount): ?>
+                {
+                  name: '<?php echo $name; ?>',
+                  y: <?php echo $amount; ?>
+                },
+              <?php endforeach; ?>
+            ]
+        }];
+        Highcharts.chart('monthly_graph', options);
+      <?php endif; ?>
 
-      options.series = [{
-          name: 'Affiliates',
-          colorByPoint: true,
-          data: [
-            <?php foreach ($yearly_affiliates as $name=>$amount): ?>
-              {
-                name: '<?php echo $name; ?>',
-                y: <?php echo $amount; ?>
-              },
-            <?php endforeach; ?>
-          ]
-      }];
-      Highcharts.chart('yearly_graph', options);
+      <?php if($_GET['length']=='year'): ?>
+        options.series = [{
+            name: 'Affiliates',
+            colorByPoint: true,
+            data: [
+              <?php foreach ($yearly_affiliates as $name=>$amount): ?>
+                {
+                  name: '<?php echo $name; ?>',
+                  y: <?php echo $amount; ?>
+                },
+              <?php endforeach; ?>
+            ]
+        }];
+        Highcharts.chart('yearly_graph', options);
+      <?php endif; ?>
 
-      options.series = [{
-          name: 'Affiliates',
-          colorByPoint: true,
-          data: [
-            <?php foreach ($previous_daily_affiliates as $name=>$amount): ?>
-              {
-                name: '<?php echo $name; ?>',
-                y: <?php echo $amount; ?>
-              },
-            <?php endforeach; ?>
-          ]
-      }];
-      Highcharts.chart('previous_daily_graph', options);
+      <?php if($_GET['length']=='last_day'): ?>
+        options.series = [{
+            name: 'Affiliates',
+            colorByPoint: true,
+            data: [
+              <?php foreach ($previous_daily_affiliates as $name=>$amount): ?>
+                {
+                  name: '<?php echo $name; ?>',
+                  y: <?php echo $amount; ?>
+                },
+              <?php endforeach; ?>
+            ]
+        }];
+        Highcharts.chart('previous_daily_graph', options);
+      <?php endif; ?>
 
-      options.series = [{
-          name: 'Affiliates',
-          colorByPoint: true,
-          data: [
-            <?php foreach ($previous_weekly_affiliates as $name=>$amount): ?>
-              {
-                name: '<?php echo $name; ?>',
-                y: <?php echo $amount; ?>
-              },
-            <?php endforeach; ?>
-          ]
-      }];
-      Highcharts.chart('previous_weekly_graph', options);
+      <?php if($_GET['length']=='last_week'): ?>
+        options.series = [{
+            name: 'Affiliates',
+            colorByPoint: true,
+            data: [
+              <?php foreach ($previous_weekly_affiliates as $name=>$amount): ?>
+                {
+                  name: '<?php echo $name; ?>',
+                  y: <?php echo $amount; ?>
+                },
+              <?php endforeach; ?>
+            ]
+        }];
+        Highcharts.chart('previous_weekly_graph', options);
+      <?php endif; ?>
 
-      options.series = [{
-          name: 'Affiliates',
-          colorByPoint: true,
-          data: [
-            <?php foreach ($previous_monthly_affiliates as $name=>$amount): ?>
-              {
-                name: '<?php echo $name; ?>',
-                y: <?php echo $amount; ?>
-              },
-            <?php endforeach; ?>
-          ]
-      }];
-      Highcharts.chart('previous_monthly_graph', options);
+      <?php if($_GET['length']=='last_month'): ?>
+        options.series = [{
+            name: 'Affiliates',
+            colorByPoint: true,
+            data: [
+              <?php foreach ($previous_monthly_affiliates as $name=>$amount): ?>
+                {
+                  name: '<?php echo $name; ?>',
+                  y: <?php echo $amount; ?>
+                },
+              <?php endforeach; ?>
+            ]
+        }];
+        Highcharts.chart('previous_monthly_graph', options);
+      <?php endif; ?>
 
-      options.series = [{
-          name: 'Affiliates',
-          colorByPoint: true,
-          data: [
-            <?php foreach ($previous_yearly_affiliates as $name=>$amount): ?>
-              {
-                name: '<?php echo $name; ?>',
-                y: <?php echo $amount; ?>
-              },
-            <?php endforeach; ?>
-          ]
-      }];
-      Highcharts.chart('previous_yearly_graph', options);
+      <?php if($_GET['length']=='last_year'): ?>
+        options.series = [{
+            name: 'Affiliates',
+            colorByPoint: true,
+            data: [
+              <?php foreach ($previous_yearly_affiliates as $name=>$amount): ?>
+                {
+                  name: '<?php echo $name; ?>',
+                  y: <?php echo $amount; ?>
+                },
+              <?php endforeach; ?>
+            ]
+        }];
+        Highcharts.chart('previous_yearly_graph', options);
+      <?php endif; ?>
 
-      options.series = [{
-          name: 'Affiliates',
-          colorByPoint: true,
-          data: [
-            <?php foreach ($lifetime_affiliates as $name=>$amount): ?>
-              {
-                name: '<?php echo $name; ?>',
-                y: <?php echo $amount; ?>
-              },
-            <?php endforeach; ?>
-          ]
-      }];
-      Highcharts.chart('lifetime_graph', options);
+      <?php if($_GET['length']=='life'): ?>
+        options.series = [{
+            name: 'Affiliates',
+            colorByPoint: true,
+            data: [
+              <?php foreach ($lifetime_affiliates as $name=>$amount): ?>
+                {
+                  name: '<?php echo $name; ?>',
+                  y: <?php echo $amount; ?>
+                },
+              <?php endforeach; ?>
+            ]
+        }];
+        Highcharts.chart('lifetime_graph', options);
+      <?php endif; ?>
+
+      $('#length').change(function(){
+        $(this).closest('form').trigger('submit');
+      });
     });
   </script>
 
@@ -526,135 +566,173 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-sm-12 col-md-6">
-      <h1>Daily</h1>
-      <ol>
-        <?php foreach ($daily_affiliates as $name=>$amount): ?>
-          <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
-        <?php endforeach; ?>
-        <li><strong>Ben Sandy</strong> - $0</li>
-      </ol>
-    </div>
-    <div class="col-sm-12 col-md-6">
-      <div id="daily_graph" style="height:200px"></div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-sm-12 col-md-6">
-      <h1>Yesterday</h1>
-      <ol>
-        <?php foreach ($previous_daily_affiliates as $name=>$amount): ?>
-          <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
-        <?php endforeach; ?>
-        <li><strong>Ben Sandy</strong> - $0</li>
-      </ol>
-    </div>
-    <div class="col-sm-12 col-md-6">
-      <div id="previous_daily_graph" style="height:200px"></div>
+    <div class="col-sm-12">
+      <form>
+        <label for="length">Timeframe:</label>
+        <select id="length" name="length">
+          <option <?php if ($_GET['length']=='day'){echo 'selected="selected"';} ?> value="day">Today</option>
+          <option <?php if ($_GET['length']=='last_day'){echo 'selected="selected"';} ?> value="last_day">Yesterday</option>
+          <option <?php if ($_GET['length']=='week'){echo 'selected="selected"';} ?> value="week">Weekly</option>
+          <option <?php if ($_GET['length']=='last_week'){echo 'selected="selected"';} ?> value="last_week">Last Week</option>
+          <option <?php if ($_GET['length']=='month'){echo 'selected="selected"';} ?> value="month">Monthly</option>
+          <option <?php if ($_GET['length']=='last_month'){echo 'selected="selected"';} ?> value="last_month">Last Month</option>
+          <option <?php if ($_GET['length']=='year'){echo 'selected="selected"';} ?> value="year">Yearly</option>
+          <option <?php if ($_GET['length']=='last_year'){echo 'selected="selected"';} ?> value="last_year">Last Year</option>
+          <option <?php if ($_GET['length']=='life'){echo 'selected="selected"';} ?> value="life">Lifetime</option>
+        </select>
+      </form>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-sm-12 col-md-6">
-      <h1>Weekly</h1>
-      <ol>
-        <?php foreach ($weekly_affiliates as $name=>$amount): ?>
-          <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
-        <?php endforeach; ?>
-        <li><strong>Ben Sandy</strong> - $0</li>
-      </ol>
-    </div>
-    <div class="col-sm-12 col-md-6">
-      <div id="weekly_graph" style="height:200px"></div>
-    </div>
-  </div>
 
-  <div class="row">
-    <div class="col-sm-12 col-md-6">
-      <h1>Last Week</h1>
-      <ol>
-        <?php foreach ($previous_weekly_affiliates as $name=>$amount): ?>
-          <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
-        <?php endforeach; ?>
-        <li><strong>Ben Sandy</strong> - $0</li>
-      </ol>
+  <?php if(!isset($_GET['length']) || $_GET['length']=='day'): ?>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h1>Daily</h1>
+        <ol>
+          <?php foreach ($daily_affiliates as $name=>$amount): ?>
+            <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
+          <?php endforeach; ?>
+          <li><strong>Ben Sandy</strong> - $0</li>
+        </ol>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <div id="daily_graph" style="height:200px"></div>
+      </div>
     </div>
-    <div class="col-sm-12 col-md-6">
-      <div id="previous_weekly_graph" style="height:200px"></div>
-    </div>
-  </div>
+  <?php endif; ?>
 
-  <div class="row">
-    <div class="col-sm-12 col-md-6">
-      <h1>Monthly</h1>
-      <ol>
-        <?php foreach ($monthly_affiliates as $name=>$amount): ?>
-          <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
-        <?php endforeach; ?>
-        <li><strong>Ben Sandy</strong> - $0</li>
-      </ol>
+  <?php if($_GET['length']=='last_day'): ?>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h1>Yesterday</h1>
+        <ol>
+          <?php foreach ($previous_daily_affiliates as $name=>$amount): ?>
+            <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
+          <?php endforeach; ?>
+          <li><strong>Ben Sandy</strong> - $0</li>
+        </ol>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <div id="previous_daily_graph" style="height:200px"></div>
+      </div>
     </div>
-    <div class="col-sm-12 col-md-6">
-      <div id="monthly_graph" style="height:200px"></div>
-    </div>
-  </div>
+  <?php endif; ?>
 
-  <div class="row">
-    <div class="col-sm-12 col-md-6">
-      <h1>Last Month</h1>
-      <ol>
-        <?php foreach ($previous_monthly_affiliates as $name=>$amount): ?>
-          <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
-        <?php endforeach; ?>
-      </ol>
+  <?php if($_GET['length']=='week'): ?>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h1>Weekly</h1>
+        <ol>
+          <?php foreach ($weekly_affiliates as $name=>$amount): ?>
+            <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
+          <?php endforeach; ?>
+          <li><strong>Ben Sandy</strong> - $0</li>
+        </ol>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <div id="weekly_graph" style="height:200px"></div>
+      </div>
     </div>
-    <div class="col-sm-12 col-md-6">
-      <div id="previous_monthly_graph" style="height:200px"></div>
-    </div>
-  </div>
+  <?php endif; ?>
 
-  <div class="row">
-    <div class="col-sm-12 col-md-6">
-      <h1>Yearly</h1>
-      <ol>
-        <?php foreach ($yearly_affiliates as $name=>$amount): ?>
-          <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
-        <?php endforeach; ?>
-      </ol>
+  <?php if($_GET['length']=='last_week'): ?>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h1>Last Week</h1>
+        <ol>
+          <?php foreach ($previous_weekly_affiliates as $name=>$amount): ?>
+            <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
+          <?php endforeach; ?>
+          <li><strong>Ben Sandy</strong> - $0</li>
+        </ol>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <div id="previous_weekly_graph" style="height:200px"></div>
+      </div>
     </div>
-    <div class="col-sm-12 col-md-6">
-      <div id="yearly_graph" style="height:200px"></div>
-    </div>
-  </div>
+  <?php endif; ?>
 
-  <div class="row">
-    <div class="col-sm-12 col-md-6">
-      <h1>Last Year</h1>
-      <ol>
-        <?php foreach ($previous_yearly_affiliates as $name=>$amount): ?>
-          <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
-        <?php endforeach; ?>
-      </ol>
+  <?php if($_GET['length']=='month'): ?>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h1>Monthly</h1>
+        <ol>
+          <?php foreach ($monthly_affiliates as $name=>$amount): ?>
+            <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
+          <?php endforeach; ?>
+          <li><strong>Ben Sandy</strong> - $0</li>
+        </ol>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <div id="monthly_graph" style="height:200px"></div>
+      </div>
     </div>
-    <div class="col-sm-12 col-md-6">
-      <div id="previous_yearly_graph" style="height:200px"></div>
-    </div>
-  </div>
+  <?php endif; ?>
 
-  <div class="row">
-    <div class="col-sm-12 col-md-6">
-      <h1>Lifetime</h1>
-      <ol>
-        <?php foreach ($lifetime_affiliates as $name=>$amount): ?>
-          <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
-        <?php endforeach; ?>
-      </ol>
+  <?php if($_GET['length']=='last_month'): ?>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h1>Last Month</h1>
+        <ol>
+          <?php foreach ($previous_monthly_affiliates as $name=>$amount): ?>
+            <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
+          <?php endforeach; ?>
+        </ol>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <div id="previous_monthly_graph" style="height:200px"></div>
+      </div>
     </div>
-    <div class="col-sm-12 col-md-6">
-      <div id="lifetime_graph" style="height:200px"></div>
+  <?php endif; ?>
+
+  <?php if($_GET['length']=='year'): ?>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h1>Yearly</h1>
+        <ol>
+          <?php foreach ($yearly_affiliates as $name=>$amount): ?>
+            <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
+          <?php endforeach; ?>
+        </ol>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <div id="yearly_graph" style="height:200px"></div>
+      </div>
     </div>
-  </div>
+  <?php endif; ?>
+
+  <?php if($_GET['length']=='last_year'): ?>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h1>Last Year</h1>
+        <ol>
+          <?php foreach ($previous_yearly_affiliates as $name=>$amount): ?>
+            <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
+          <?php endforeach; ?>
+        </ol>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <div id="previous_yearly_graph" style="height:200px"></div>
+      </div>
+    </div>
+  <?php endif; ?>
+
+  <?php if($_GET['length']=='life'): ?>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h1>Lifetime</h1>
+        <ol>
+          <?php foreach ($lifetime_affiliates as $name=>$amount): ?>
+            <li><strong><?php echo $name; ?></strong> - $<?php echo number_format($amount); ?></li>
+          <?php endforeach; ?>
+        </ol>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <div id="lifetime_graph" style="height:200px"></div>
+      </div>
+    </div>
+  <?php endif; ?>
 </div>
 
 </body></html>
